@@ -45,7 +45,7 @@
 
     - name: Copy Git private key to remote server
       copy:
-        src: ~/.ssh/id_rsa
+        src: ~/.ssh/id_rsa-personal
         dest: ~/.ssh/id_rsa
         mode: '0600'
       become_user: ubuntu
@@ -100,18 +100,8 @@
       args:
         chdir: /var/www/test.ulearn.nz
 
-    - name: Create SQLite database file
-      command: touch database/database.sqlite
-      args:
-        chdir: /var/www/test.ulearn.nz
-
     - name: Clear the table content
-      command: php artisan migrate:refresh --seed --force
-      args:
-        chdir: /var/www/test.ulearn.nz
-
-    - name: Seed user in DB
-      command: php artisan db:seed --class=UsersTableSeeder --force
+      command: php artisan migrate
       args:
         chdir: /var/www/test.ulearn.nz
 
