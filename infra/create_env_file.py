@@ -4,7 +4,7 @@ ssm_client = boto3.client('ssm', region_name='ap-southeast-2')
 
 parameter_names = ['laravel_APP_DEBUG', 'laravel_APP_ENV', 'laravel_APP_KEY', 'laravel_APP_LOCALE_PHP',
                    'laravel_APP_NAME', 'laravel_APP_TIMEZONE', 'laravel_DB_USERNAME', 'laravel_DB_PORT',
-                   'laravel_DB_PASSWORD', 'laravel_DB_CONNECTION', 'laravel_DB_DATABASE']
+                   'laravel_DB_PASSWORD', 'laravel_DB_CONNECTION', 'laravel_DB_DATABASE', 'laravel_DB_HOST']
 
 # Create .env file
 with open('.env', 'w') as env_file:

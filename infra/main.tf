@@ -154,7 +154,7 @@ resource "aws_db_instance" "laraveldb" {
 resource "aws_ssm_parameter" "db_endpoint" {
   name  = "laravel_DB_HOST"
   type  = "SecureString"
-  value = aws_db_instance.laraveldb.endpoint
+  value = aws_db_instance.laraveldb.address
 }
 
 resource "aws_iam_role" "laravel_checkin_role" {

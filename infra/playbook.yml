@@ -100,8 +100,8 @@
       args:
         chdir: /var/www/test.ulearn.nz
 
-    - name: Clear the table content
-      command: php artisan migrate
+    - name: Migrate
+      command: php artisan migrate --force
       args:
         chdir: /var/www/test.ulearn.nz
 
