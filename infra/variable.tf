@@ -1,5 +1,5 @@
 variable "subnet_ids" {
-  type = list(string)
+  type    = list(string)
   default = ["subnet-7bc7840d", "subnet-f60195af"]
 }
 

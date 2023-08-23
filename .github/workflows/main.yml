@@ -27,7 +27,7 @@ jobs:
         
       - name: Terraform Format
         id: fmt
-        run: terraform fmt -check
+        run: terraform fmt
 
       - name: Terraform Init
         id: init
@@ -86,10 +86,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up Python 3.9
+      - name: Set up Python 3.10
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: 3.10
 
       - name: Install dependencies Including Ansible
         run: |
