@@ -7,7 +7,7 @@ on:
 jobs:
   terraform:
     name: "Create infrastructure"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     defaults:
       run:
         working-directory: infra
@@ -83,7 +83,7 @@ jobs:
   deploy_code:
     needs: terraform
     if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     defaults:
       run:
         working-directory: infra
