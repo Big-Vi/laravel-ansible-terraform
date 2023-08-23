@@ -194,6 +194,7 @@ resource "aws_instance" "server" {
   tags = {
     Name = "${var.ec2_name}-server"
   }
+  depends_on = [aws_db_instance.laraveldb]
 }
 
 ## Setting up sub domain and point to EC2 instance IP.

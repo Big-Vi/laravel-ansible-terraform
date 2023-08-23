@@ -15,7 +15,7 @@ variable "key_name" {
 
 variable "my_ip" {
   type    = string
-  default = "103.163.248.232/32"
+  default = "103.163.248.98/32"
 }
 
 variable "ec2_name" {

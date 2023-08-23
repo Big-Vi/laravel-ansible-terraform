@@ -15,7 +15,7 @@
     - name: Install required packages
       apt:
         name: ['php8.2', 'php8.2-cli', 'php8.2-fpm', 'php8.2-common', 'php8.2-curl', 'php8.2-mbstring', 
-          'php8.2-xml', 'php8.2-sqlite3', 'composer', 'git', 'nginx', 'python3-pip', 'certbot', 'python3-certbot-nginx']
+          'php8.2-xml', 'php8.2-pgsql', 'composer', 'git', 'nginx', 'python3-pip', 'certbot', 'python3-certbot-nginx']
         state: present
 
     - name: Install Boto3
@@ -43,32 +43,24 @@
           mode: '0755'
           recurse: yes
 
-    - name: Copy Git private key to remote server
-      copy:
-        src: ~/.ssh/id_rsa-personal
-        dest: ~/.ssh/id_rsa
+    - name: Change SSH Key Permission to 600
+      file:
+        path: ~/.ssh/id_rsa
+        owner: ubuntu
+        group: ubuntu
         mode: '0600'
-      become_user: ubuntu
-
-    - name: Add GitHub SSH Key to known_hosts
-      known_hosts:
-        name: github.com
-        key: "{{ lookup('pipe', 'ssh-keyscan github.com') }}"
-        path: /home/ubuntu/.ssh/known_hosts
-      become_user: ubuntu
       
     - name: Clone the private Git repository
       command: git clone -b laravel-ansible-tf git@github.com:Big-Vi/laravel-ansible-terraform.git .
       args:
         chdir: /var/www/test.ulearn.nz
-      become_user: ubuntu
 
     - name: set permissions for Laravel storage folder
       file:
           path: /var/www/test.ulearn.nz/storage
           state: directory
           recurse: yes
-          mode: '0757'
+          mode: '0755'
       
     - name: Install Composer dependencies
       command: composer install --optimize-autoloader --no-dev
