@@ -50,3 +50,5 @@ variable "managed_policy_arn_ssm" {
 variable "laravel_zone_id" {
   default = "Z07594225H1Y6M776MSO"
 }
+
+variable "aws_ssh_key" {}

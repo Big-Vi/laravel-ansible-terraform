@@ -47,6 +47,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+          TF_VAR_aws_ssh_key: ${{ secrets.AWS_SSH_KEY }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

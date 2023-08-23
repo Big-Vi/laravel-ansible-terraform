@@ -227,7 +227,7 @@ resource "ansible_host" "laravel-ansible-server" {
   groups = ["nginx"]
   variables = {
     ansible_user                 = "ubuntu",
-    ansible_ssh_private_key_file = "~/.ssh/id_rsa-uLearn",
+    ansible_ssh_private_key_file = var.aws_ssh_key,
     ansible_python_interpreter   = "/usr/bin/python3"
   }
 }
