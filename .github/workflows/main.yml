@@ -59,4 +59,4 @@ jobs:
       - name: run playbook
         working-directory: infra/main
         run: |
-            sudo ansible-playbook -i inventory.yml playbook.yml
+            ansible-playbook -i inventory.yml playbook.yml
