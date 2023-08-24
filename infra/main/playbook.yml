@@ -88,7 +88,7 @@
         state: absent
 
     - name: Run Python script to create .env
-      command: python3 infra/create_env_file.py
+      command: python3 infra/main/create_env_file.py
       args:
         chdir: /var/www/test.ulearn.nz
 

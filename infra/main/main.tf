@@ -10,6 +10,14 @@ terraform {
     }
   }
 
+  backend "s3" {
+    bucket         = "laravel-tfstate"
+    key            = "tfstate-s3-bucket"
+    region         = "ap-southeast-2"
+    encrypt        = true
+    dynamodb_table = "laravel-terraform-lock"
+  }
+
   required_version = ">= 1.5.5"
 }
 
@@ -157,8 +165,8 @@ resource "aws_ssm_parameter" "db_endpoint" {
   value = aws_db_instance.laraveldb.address
 }
 
-resource "aws_iam_role" "laravel_checkin_role" {
-  name = "laravelCheckinEC2Role"
+resource "aws_iam_role" "laravel_iam_role" {
+  name = "laravelEC2Role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -172,14 +180,14 @@ resource "aws_iam_role" "laravel_checkin_role" {
   })
 }
 
-resource "aws_iam_instance_profile" "laravel_checkin_instance_profile" {
-  name = "laravelChecinEC2InstanceProfile"
-  role = aws_iam_role.laravel_checkin_role.name
+resource "aws_iam_instance_profile" "laravel_instance_profile" {
+  name = "laravelEC2InstanceProfile"
+  role = aws_iam_role.laravel_iam_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "laravel_checkin_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "laravel_iam_policy_attachment" {
   policy_arn = var.managed_policy_arn_ssm
-  role       = aws_iam_role.laravel_checkin_role.name
+  role       = aws_iam_role.laravel_iam_role.name
 }
 
 resource "aws_instance" "server" {
@@ -188,7 +196,7 @@ resource "aws_instance" "server" {
   key_name                    = var.key_name
   associate_public_ip_address = true
   subnet_id                   = var.subnet_ids[0]
-  iam_instance_profile        = aws_iam_instance_profile.laravel_checkin_instance_profile.name
+  iam_instance_profile        = aws_iam_instance_profile.laravel_instance_profile.name
 
   vpc_security_group_ids = [aws_security_group.laravel_server_sg.id]
   tags = {
