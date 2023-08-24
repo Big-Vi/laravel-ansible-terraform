@@ -29,11 +29,6 @@ jobs:
           sudo apt install -y ansible
           sudo ansible-galaxy collection install cloud.terraform
 
-      - name: Install Ansible Collection
-        uses: ansible/ansible-galaxy-action@v1
-        with:
-          collections: cloud.terraform
-
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
