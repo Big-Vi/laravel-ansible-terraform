@@ -46,7 +46,7 @@ jobs:
           sudo apt-add-repository --yes --update ppa:ansible/ansible
           sudo apt update
           sudo apt install -y ansible
-          sudo ansible-galaxy collection install cloud.terraform
+          ansible-galaxy collection install cloud.terraform
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
@@ -59,4 +59,4 @@ jobs:
       - name: run playbook
         working-directory: infra/main
         run: |
-            sudo ansible-playbook -i inventory.yml playbook.yml
+            ansible-playbook -i inventory.yml playbook.yml
