@@ -9,6 +9,17 @@
       apt:
         update_cache: yes
 
+    - name: Define the backend configuration at init
+      cloud.terraform.terraform:
+        project_path: './'
+        # state: "{{ state }}"
+        force_init: true
+        lock: true
+        backend_config:
+          region: "ap-southeast-2"
+          bucket: "laravel-tfstate"
+          key: "tfstate-s3-bucket.tfstate"
+
     - name: Add ppa Repository
       apt_repository: repo=ppa:ondrej/php
 

@@ -24,9 +24,8 @@ jobs:
       - name: Install dependencies Including Ansible
         run: |
           sudo apt update
-          sudo apt install software-properties-common
-          sudo apt-add-repository --yes --update ppa:ansible/ansible
-          sudo apt install -y ansible
+          sudo apt-get install python-pip python-dev
+          sudo pip install ansible==2.15.2
           sudo ansible-galaxy collection install cloud.terraform
 
       - name: Install SSH key
