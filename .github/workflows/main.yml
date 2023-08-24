@@ -1,7 +1,7 @@
 name: Deploy
 on:
   push:
-    branches: [ develop ]
+    branches: [ laravel-ansible-tf ]
   pull_request:
  
 jobs:
