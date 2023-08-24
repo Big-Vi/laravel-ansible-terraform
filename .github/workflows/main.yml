@@ -27,6 +27,7 @@ jobs:
           sudo apt install software-properties-common
           sudo apt-add-repository --yes --update ppa:ansible/ansible
           sudo apt install -y ansible
+          sudo ansible-galaxy collection install cloud.terraform
 
       - name: Install Ansible Collection
         uses: ansible/ansible-galaxy-action@v1
