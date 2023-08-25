@@ -1,6 +1,13 @@
 ---
   - name: Playbook
     hosts: nginx
+    vars:
+      repo: git@github.com:Big-Vi/laravel-ansible-terraform.git
+      branch: main
+      web_server_root: /var/www/example.com/
+      git_private_ssh_key: ~/.ssh/id_rsa
+      domain_name: example.com
+      certbot_email: dummyemail@gmail.com
     become: true
     become_user: root
 
@@ -29,35 +36,42 @@
         state: started
         enabled: yes
 
-    - name: Remove existing content of the directory
+    - name: Delete contents of the directory
       file:
-        path: /var/www/test.ulearn.nz
+        path: "{{ web_server_root }}"
         state: absent
-      changed_when: false
 
-    - name: Provide ownership of app folder
+    - name: Create directory if it doesn't exist
       file:
-          path: /var/www/test.ulearn.nz
-          owner: "ubuntu"
-          group: "ubuntu"
-          mode: '0755'
-          recurse: yes
+        path: "{{ web_server_root }}"
+        state: directory
+        owner: "ubuntu"
+        group: "ubuntu"
+        mode: '0757'
 
-    - name: Change SSH Key Permission to 600
-      file:
-        path: ~/.ssh/id_rsa
-        owner: ubuntu
-        group: ubuntu
+    - name: Copy Git private key to remote server
+      copy:
+        src: "{{ git_private_ssh_key }}"
+        dest: ~/.ssh/id_rsa
         mode: '0600'
+      become_user: ubuntu
+
+    - name: Add GitHub SSH Key to known_hosts
+      known_hosts:
+        name: github.com
+        key: "{{ lookup('pipe', 'ssh-keyscan github.com') }}"
+        path: /home/ubuntu/.ssh/known_hosts
+      become_user: ubuntu
       
     - name: Clone the private Git repository
-      command: git clone -b laravel-ansible-tf git@github.com:Big-Vi/laravel-ansible-terraform.git .
+      command: git clone -b {{ branch }} {{ repo }} .
       args:
-        chdir: /var/www/test.ulearn.nz
+        chdir: "{{ web_server_root }}"
+      become_user: ubuntu
 
     - name: set permissions for Laravel storage folder
       file:
-          path: /var/www/test.ulearn.nz/storage
+          path: "{{ web_server_root }}/storage"
           state: directory
           recurse: yes
           mode: '0755'
@@ -65,21 +79,21 @@
     - name: Install Composer dependencies
       command: composer install --optimize-autoloader --no-dev
       args:
-        chdir: /var/www/test.ulearn.nz
+        chdir: "{{ web_server_root }}"
       become_user: ubuntu
       changed_when: false
 
     - name: Configure Nginx
       template:
         src: nginx.conf.j2
-        dest: /etc/nginx/sites-available/test.ulearn.nz
+        dest: "/etc/nginx/sites-available/{{ domain_name }}"
       notify:
         - Reload Nginx
 
     - name: Enable Nginx site
       file:
-        src: /etc/nginx/sites-available/test.ulearn.nz
-        dest: /etc/nginx/sites-enabled/test.ulearn.nz
+        src: "/etc/nginx/sites-available/{{ domain_name }}"
+        dest: "/etc/nginx/sites-enabled/{{ domain_name }}"
         state: link
 
     - name: Remove default Nginx configuration
@@ -90,16 +104,16 @@
     - name: Run Python script to create .env
       command: python3 infra/main/create_env_file.py
       args:
-        chdir: /var/www/test.ulearn.nz
+        chdir: "{{ web_server_root }}"
 
     - name: Migrate
       command: php artisan migrate --force
       args:
-        chdir: /var/www/test.ulearn.nz
+        chdir: "{{ web_server_root }}"
 
     - name: Run Certbot to obtain SSL certificate
       command: >
-        certbot --nginx -d test.ulearn.nz -d www.test.ulearn.nz -m itservices@core-ed.org
+        certbot --nginx -d {{ domain_name }} -d www.{{ domain_name }} -m {{ certbot_email }}
         --non-interactive --agree-tos
 
     handlers:

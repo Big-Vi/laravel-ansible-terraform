@@ -5,17 +5,17 @@ variable "subnet_ids" {
 
 variable "vpc_tag" {
   type    = string
-  default = "Prod (Default)"
+  default = "Prod"
 }
 
 variable "key_name" {
   type    = string
-  default = "2021-10"
+  default = "2021-10" # EC2 key pair name
 }
 
 variable "my_ip" {
   type    = string
-  default = "103.163.248.98/32"
+  default = "103.163.248.98/32" # Whitelist your IP in security group to connect to it.
 }
 
 variable "ec2_name" {
@@ -46,9 +46,11 @@ variable "managed_policy_arn_ssm" {
   default = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
 }
 
-# Hosted zone ID
-variable "laravel_zone_id" {
-  default = "Z07594225H1Y6M776MSO"
+variable "laravel_domain" {
+  default = "example.com"
 }
 
-variable "aws_ssh_key" {}
+variable "aws_ec2_ssh_private_key" {
+  default = "~/.ssh/id_rsa-aws"
+}
+

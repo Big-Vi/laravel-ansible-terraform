@@ -13,7 +13,7 @@ terraform {
   backend "s3" {
     bucket         = "laravel-tfstate"
     key            = "tfstate-s3-bucket"
-    region         = "ap-southeast-2"
+    region         = var.region
     encrypt        = true
     dynamodb_table = "laravel-terraform-lock"
   }
@@ -205,27 +205,24 @@ resource "aws_instance" "server" {
   depends_on = [aws_db_instance.laraveldb]
 }
 
-## Setting up sub domain and point to EC2 instance IP.
-resource "aws_route53_record" "subdomain" {
-  zone_id = var.laravel_zone_id
-  name    = "test.ulearn.nz"
-  type    = "A"
-
-  ttl = "300"
-
-  records = [aws_instance.server.public_ip]
-
-  depends_on = [aws_instance.server]
+resource "aws_route53_zone" "laravel_domain" {
+  name = var.laravel_domain
 }
-resource "aws_route53_record" "subdomain_www" {
-  zone_id = var.laravel_zone_id
-  name    = "www.test.ulearn.nz"
+
+resource "aws_route53_record" "apex" {
+  zone_id = aws_route53_zone.laravel_domain.zone_id
+  name    = var.laravel_domain
   type    = "A"
-
-  ttl = "300"
-
+  ttl     = "300"
   records = [aws_instance.server.public_ip]
+}
 
+resource "aws_route53_record" "www" {
+  zone_id = aws_route53_zone.my_domain.zone_id
+  name    = "www.${var.laravel_domain}"
+  type    = "CNAME"
+  ttl     = "300"
+  records = [var.laravel_domain]  # Points "www" to the apex domain
   depends_on = [aws_instance.server]
 }
 
@@ -235,7 +232,7 @@ resource "ansible_host" "laravel-ansible-server" {
   groups = ["nginx"]
   variables = {
     ansible_user                 = "ubuntu",
-    ansible_ssh_private_key_file = var.aws_ssh_key,
+    ansible_ssh_private_key_file = var.aws_ec2_ssh_private_key,
     ansible_python_interpreter   = "/usr/bin/python3"
   }
 }
