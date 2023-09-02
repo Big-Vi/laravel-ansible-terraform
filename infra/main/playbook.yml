@@ -55,12 +55,6 @@
       args:
         chdir: "{{ web_server_root }}"
       become_user: ubuntu
-      
-    - name: Clone the private Git repository
-      command: git clone -b {{ branch }} {{ repo }} .
-      args:
-        chdir: "{{ web_server_root }}"
-      become_user: ubuntu
 
     - name: set permissions for Laravel storage folder
       file:
