@@ -51,6 +51,6 @@ variable "laravel_domain" {
 }
 
 variable "aws_ec2_ssh_private_key" {
-  default = "~/.ssh/id_rsa-aws"
+  default = "~/.ssh/aws_ssk_key.pem"
 }
 

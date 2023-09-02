@@ -2,8 +2,9 @@
   - name: Playbook
     hosts: nginx
     vars:
-      repo: git@github.com:Big-Vi/laravel-ansible-terraform.git
+      repo: github.com/Big-Vi/laravel-ansible-terraform.git
       branch: main
+      git_username: big-vi
       web_server_root: /var/www/example.com/
       git_private_ssh_key: ~/.ssh/id_rsa
       domain_name: example.com
@@ -49,18 +50,10 @@
         group: "ubuntu"
         mode: '0757'
 
-    - name: Copy Git private key to remote server
-      copy:
-        src: "{{ git_private_ssh_key }}"
-        dest: ~/.ssh/id_rsa
-        mode: '0600'
-      become_user: ubuntu
-
-    - name: Add GitHub SSH Key to known_hosts
-      known_hosts:
-        name: github.com
-        key: "{{ lookup('pipe', 'ssh-keyscan github.com') }}"
-        path: /home/ubuntu/.ssh/known_hosts
+    - name: Clone the private Git repository
+      command: git clone -b {{ branch }} https://{{ git_username }}:{{ lookup('aws_ssm', 'Git_Personal_Access_Token' ) }}@{{ repo }} .
+      args:
+        chdir: "{{ web_server_root }}"
       become_user: ubuntu
       
     - name: Clone the private Git repository

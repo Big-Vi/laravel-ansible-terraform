@@ -11,7 +11,7 @@ def delete_s3_bucket_contents(bucket_name):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python script.py <bucket_name>")
+        print("Usage: python <file>.py <bucket_name>")
         sys.exit(1)
     
     bucket_name = sys.argv[1]
