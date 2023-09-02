@@ -1,6 +1,6 @@
 variable "subnet_ids" {
   type    = list(string)
-  default = ["subnet-7bc7840d", "subnet-f60195af"]
+  default = ["<subnet-id-1>", "<subnet-id-2>"]
 }
 
 variable "vpc_tag" {
@@ -10,12 +10,12 @@ variable "vpc_tag" {
 
 variable "key_name" {
   type    = string
-  default = "2021-10" # EC2 key pair name
+  default = "aws_ssk_key" # EC2 key pair name. Get it from EC2 console.
 }
 
 variable "my_ip" {
   type    = string
-  default = "103.163.248.98/32" # Whitelist your IP in security group to connect to it.
+  default = "<ip-address>" # Whitelist your IP in security group to connect to it.
 }
 
 variable "ec2_name" {
@@ -38,7 +38,7 @@ variable "instance_type" {
 variable "ami" {
   description = "ami id"
   type        = string
-  default     = "ami-0310483fb2b488153"
+  default     = "<ami-id>"
 }
 
 # Mmanaged policy ARN
